@@ -167,7 +167,7 @@ volume:
 
   # Maximum numbers of volumes, count[,count]...
   # If set to zero on non-windows OS, the limit will be auto configured. (default "7")
-  maxVolumes: "0"
+  maxVolumes: "500"
 
   # Volume server's rack name
   rack: null
@@ -218,6 +218,113 @@ volume:
   #   beta.kubernetes.io/arch: amd64
   nodeSelector: |
     sw-volume: "true"
+
+  # used to assign priority to server pods
+  # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  priorityClassName: ""
+
+volume1:
+  enabled: true
+  repository: null
+  imageName: null
+  imageTag: null
+  imageOverride: null
+  restartPolicy: null
+  port: 8081
+  grpcPort: 18081
+  metricsPort: 9328
+  ipBind: "0.0.0.0"
+  replicas: 1
+  loggingOverrideLevel: null
+  # number of seconds between heartbeats, must be smaller than or equal to the master's setting
+  pulseSeconds: null
+  # Choose [memory|leveldb|leveldbMedium|leveldbLarge] mode for memory~performance balance., default memory
+  index: null
+  # limit file size to avoid out of memory, default 256mb
+  fileSizeLimitMB: null
+  # minimum free disk space(in percents). If free disk space lower this value - all volumes marks as ReadOnly
+  minFreeSpacePercent: 7
+
+  # can use ANY storage-class , example with local-path-provisner
+  #  data:
+  #    type: "persistentVolumeClaim"
+  #    size: "24Ti"
+  #    storageClass: "local-path-provisioner"
+  data:
+    type: "hostPath"
+    size: ""
+    storageClass: ""
+  idx:
+    type: "hostPath"
+    size: ""
+    storageClass: ""
+
+  logs:
+    type: "hostPath"
+    size: ""
+    storageClass: ""
+
+  # limit background compaction or copying speed in mega bytes per second
+  compactionMBps: "50"
+
+  # Directories to store data files. dir[,dir]... (default "/tmp")
+  dir: "/data"
+  # Directories to store index files. dir[,dir]... (default "/tmp")
+  dir_idx: null
+
+  # Maximum numbers of volumes, count[,count]...
+  # If set to zero on non-windows OS, the limit will be auto configured. (default "7")
+  maxVolumes: "500"
+
+  # Volume server's rack name
+  rack: null
+
+  # Volume server's data center name
+  dataCenter: null
+
+  # Redirect moved or non-local volumes. (default proxy)
+  readMode: proxy
+
+  # Comma separated Ip addresses having write permission. No limit if empty.
+  whiteList: null
+
+  # Adjust jpg orientation when uploading.
+  imagesFixOrientation: false
+
+  extraVolumes: ""
+  extraVolumeMounts: ""
+
+  # Affinity Settings
+  # Commenting out or setting as empty the affinity variable, will allow
+  # deployment to single node services such as Minikube
+  affinity: |
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app: {{ template "seaweedfs.name" . }}
+              release: "{{ .Release.Name }}"
+              component: volume
+          topologyKey: kubernetes.io/hostname
+
+  # Resource requests, limits, etc. for the server cluster placement. This
+  # should map directly to the value of the resources field for a PodSpec,
+  # formatted as a multi-line string. By default no direct resource request
+  # is made.
+  resources: null
+
+  # Toleration Settings for server pods
+  # This should be a multi-line string matching the Toleration array
+  # in a PodSpec.
+  tolerations: ""
+
+  # nodeSelector labels for server pod assignment, formatted as a muli-line string.
+  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  # Example:
+  # nodeSelector: |
+  #   beta.kubernetes.io/arch: amd64
+  nodeSelector: |
+    sw-volume1: "true"
 
   # used to assign priority to server pods
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
@@ -315,7 +422,7 @@ filer:
   # extraEnvVars is a list of extra enviroment variables to set with the stateful set.
   extraEnvironmentVars:
     WEED_MYSQL_ENABLED: "true"
-    WEED_MYSQL_HOSTNAME: "mysql-db-host"
+    WEED_MYSQL_HOSTNAME: "10.101.238.71"
     WEED_MYSQL_PORT: "3306"
     WEED_MYSQL_DATABASE: "sw_database"
     WEED_MYSQL_CONNECTION_MAX_IDLE: "5"
@@ -343,7 +450,7 @@ filer:
     skipAuthSecretCreation: false
 
 s3:
-  enabled: false
+  enabled: true
   repository: null
   imageName: null
   imageTag: null

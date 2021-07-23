@@ -7,7 +7,9 @@ metadata:
     app: {{ template "seaweedfs.name" . }}
     component: volume
 spec:
-  clusterIP: None
+  externalIPs:
+    - 10.101.238.72
+  type: ClusterIP
   ports:
   - name: "swfs-volume"
     port: {{ .Values.volume.port }}

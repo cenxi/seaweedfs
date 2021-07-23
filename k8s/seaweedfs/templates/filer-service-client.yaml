@@ -10,7 +10,9 @@ metadata:
     monitoring: "true"
 {{- end }}
 spec:
-  clusterIP: None
+  externalIPs:
+    - 10.101.238.70
+  type: ClusterIP
   ports:
   - name: "swfs-filer"
     port: {{ .Values.filer.port }}

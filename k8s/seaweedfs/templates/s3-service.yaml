@@ -7,6 +7,9 @@ metadata:
     app: {{ template "seaweedfs.name" . }}
     component: s3
 spec:
+  externalIPs:
+    - 10.101.238.70
+  type: ClusterIP
   ports:
   - name: "swfs-s3"
     port: {{ if .Values.s3.enabled }}{{ .Values.s3.port }}{{ else }}{{ .Values.filer.s3.port }}{{ end }}

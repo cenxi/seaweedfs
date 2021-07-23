@@ -9,7 +9,9 @@ metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"    
 spec:
-  clusterIP: None
+  externalIPs:
+    - 10.101.238.70
+  type: ClusterIP
   publishNotReadyAddresses: true
   ports:
   - name: "swfs-master"
