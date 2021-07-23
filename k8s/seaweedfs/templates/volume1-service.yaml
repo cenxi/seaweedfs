@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "seaweedfs.name" . }}-volume1
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "seaweedfs.name" . }}
+    component: volume1
+spec:
+  externalIPs:
+    - 10.101.238.71
+  type: ClusterIP
+  ports:
+  - name: "swfs-volume1"
+    port: {{ .Values.volume1.port }}
+    targetPort: {{ .Values.volume1.port }}
+    protocol: TCP
+  - name: "swfs-volume-18081"
+    port: {{ .Values.volume1.grpcPort }}
+    targetPort: {{ .Values.volume1.grpcPort }}
+    protocol: TCP
+{{- if .Values.volume.metricsPort }}
+  - name: "swfs-volume-metrics1"
+    port: {{ .Values.volume1.metricsPort }}
+    targetPort: {{ .Values.volume1.metricsPort }}
+    protocol: TCP
+{{- end }}
+  selector:
+    app: {{ template "seaweedfs.name" . }}
+    component: volume1
